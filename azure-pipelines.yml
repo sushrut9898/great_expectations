@@ -83,8 +83,25 @@ stages:
               pyupgrade --py3-plus || EXIT_STATUS=$?
               exit $EXIT_STATUS
 
-  - stage: required
+  - stage: changelog
     dependsOn: [scope_check, lint]
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    jobs:
+      - job: changes
+        condition: or(eq(stageDependencies.scope_check.changes.outputs['CheckChanges.GEChanged'], true), eq(stageDependencies.scope_check.changes.outputs['CheckChanges.DocsChanged'], true), eq(variables.isMain, true))
+        steps:
+          - task: ChangedFiles@1
+            name: CheckChanges
+            inputs:
+              verbose: true
+              rules: |
+                [ChangelogChanged]
+                docs/changelog.rst
+
+  - stage: required
+    dependsOn: [scope_check, lint, changelog]
     pool:
       vmImage: 'ubuntu-18.04'
 
@@ -212,7 +229,7 @@ stages:
               reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
 
   - stage: usage_stats_integration
-    dependsOn: [scope_check, lint]
+    dependsOn: [scope_check, lint, changelog]
     pool:
       vmImage: 'ubuntu-latest'
 
@@ -246,7 +263,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
 
-    dependsOn: [scope_check, lint]
+    dependsOn: [scope_check, lint, changelog]
 
     jobs:
       - job: mysql
