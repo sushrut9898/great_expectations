@@ -13,6 +13,7 @@ from great_expectations.core.batch import (
 )
 from great_expectations.data_context.util import instantiate_class_from_config
 from great_expectations.datasource.new_datasource import Datasource
+from tests.test_utils import create_files_in_directory
 
 yaml = YAML()
 
@@ -386,3 +387,125 @@ def test_get_batch_definitions_and_get_batch_basics(
         )
     )
     assert batch.batch_request == {}
+
+
+
+@pytest.fixture
+def basic_datasource_with_runtime_data_connector_sorter_limit():
+
+    basic_datasource: Datasource = instantiate_class_from_config(
+        yaml.load(
+            f"""
+    class_name: Datasource
+
+    execution_engine:
+        class_name: PandasExecutionEngine
+
+    data_connectors:
+        test_runtime_data_connector:
+            module_name: great_expectations.datasource.data_connector
+            class_name: RuntimeDataConnector
+            batch_identifiers:
+                - year
+        """,
+        ),
+        runtime_environment={"name": "my_datasource"},
+        config_defaults={"module_name": "great_expectations.datasource"},
+    )
+    return basic_datasource
+
+
+# test sorting
+def test_get_batch_definitions_and_sorting(
+    basic_datasource_with_runtime_data_connector_sorter_limit, tmp_path_factory
+):
+    base_directory: str = str(
+        tmp_path_factory.mktemp(
+            "basic_pandas_datasource_runtime_data_connector_with_path"
+        )
+    )
+    sample_file_names: List[str] = [
+        "File_1990.csv",
+        "File_1999.csv",
+        "File_2000.csv",
+        "File_2001.csv",
+        "File_2010.csv",
+    ]
+    create_files_in_directory(
+        directory=base_directory, file_name_list=sample_file_names
+    )
+    # add content?
+
+    # test_df: pd.DataFrame = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    data_connector_name: str = "test_runtime_data_connector"
+    data_asset_name: str = "test_asset_1"
+
+    batch_request: dict = {
+        "datasource_name": basic_datasource_with_runtime_data_connector_sorter_limit.name,
+        "data_connector_name": data_connector_name,
+        "data_asset_name": data_asset_name,
+        "batch_identifiers": {"year": 1999},
+        "runtime_parameters": {"path": base_directory + "/File_1999.csv"},
+    }
+
+    batch_request = RuntimeBatchRequest(**batch_request)
+
+    # what happens when we pass in a directory with multiple files?
+    what_happens = basic_datasource_with_runtime_data_connector_sorter_limit.get_available_batch_definitions(
+                batch_request=batch_request
+            )
+
+    batch_request: dict = {
+        "datasource_name": basic_datasource_with_runtime_data_connector_sorter_limit.name,
+        "data_connector_name": data_connector_name,
+        "data_asset_name": data_asset_name,
+        "batch_identifiers": {"year": 2000},
+        "runtime_parameters": {"path": base_directory + "/File_2000.csv"},
+    }
+
+    print(what_happens)
+    print("hello\n\n\n")
+    batch_request = RuntimeBatchRequest(**batch_request)
+
+    batch_definitions = basic_datasource_with_runtime_data_connector_sorter_limit.get_available_batch_definitions(
+        batch_request=batch_request
+    )
+
+    batch_list = basic_datasource_with_runtime_data_connector_sorter_limit.get_batch_list_from_batch_request(batch_request=batch_request)
+    print(batch_definitions)
+    print("hello\n\n\n")
+    print(batch_list)
+    print("hello\n")
+    print("hello\n")
+
+# batch_request: RuntimeBatchRequest = RuntimeBatchRequest(**batch_request)
+    # assert (
+    #     len(
+    #         basic_datasource_with_runtime_data_connector.get_available_batch_definitions(
+    #             batch_request=batch_request
+    #         )
+    #     )
+    #     == 1
+    # )
+    #
+    # my_df: pd.DataFrame = pd.DataFrame({"x": range(10), "y": range(10)})
+    # batch: Batch = (
+    #     basic_datasource_with_runtime_data_connector.get_batch_from_batch_definition(
+    #         batch_definition=BatchDefinition(
+    #             "my_datasource",
+    #             "_pipeline",
+    #             "_pipeline",
+    #             batch_identifiers=BatchIdentifiers({"some_random_id": 1}),
+    #         ),
+    #         batch_data=my_df,
+    #     )
+    # )
+    # assert batch.batch_request == {}
+
+
+# test limit
+
+# test index
+
+# test custom filter function

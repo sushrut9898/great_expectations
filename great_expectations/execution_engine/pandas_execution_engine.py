@@ -132,6 +132,7 @@ Notes:
                 raise ValueError(
                     "RuntimeDataBatchSpec must provide a Pandas DataFrame or PandasBatchData object."
                 )
+            # <WILL> Marker...
             batch_spec.batch_data = "PandasDataFrame"
         elif isinstance(batch_spec, S3BatchSpec):
             if self._s3 is None:

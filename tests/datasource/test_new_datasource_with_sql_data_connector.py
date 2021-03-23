@@ -249,6 +249,8 @@ tables:
 """
     )
 
+    my_sql_datasource
+
     print(json.dumps(my_sql_datasource.get_available_data_asset_names(), indent=4))
     assert my_sql_datasource.get_available_data_asset_names() == {
         "whole_table": [
@@ -882,3 +884,60 @@ introspection:
             date_format_string: "%Y-%m-%d"
     """
         )
+
+
+
+def test_sorting_data_asset(empty_data_context):
+    context = empty_data_context
+    # This test mirrors the likely path to configure a SimpleSqlalchemyDatasource
+
+    db_file = file_relative_path(
+        __file__,
+        os.path.join("..", "test_sets", "test_cases_for_sql_data_connector.db"),
+    )
+
+    # my_sql_datasource = context.test_yaml_config(
+    #     f"""
+    # class_name: SimpleSqlalchemyDatasource
+    # connection_string: sqlite:///{db_file}
+    # introspection:
+    #     daily:
+    #         skip_inapplicable_tables: true
+    #         splitter_method: _split_on_converted_datetime
+    #         splitter_kwargs:
+    #             column_name: date
+    #             date_format_string: "%Y-%m-%d"
+    # """
+    # )
+
+    config = yaml.load(
+        f"""
+    class_name: Datasource
+
+    execution_engine:
+        class_name: SqlAlchemyExecutionEngine
+        connection_string: sqlite:///{db_file}
+
+    data_connectors:
+        my_configured_data_connector:
+            class_name: ConfiguredAssetSqlDataConnector
+
+            data_assets:
+
+                table_partitioned_by_date_column__A:
+                    splitter_method: _split_on_converted_datetime
+                    splitter_kwargs:
+                        column_name: date
+                        date_format_string: "%Y-%W"
+
+        """,
+    )
+
+    my_data_connector = instantiate_class_from_config(
+        config,
+        config_defaults={"module_name": "great_expectations.datasource"},
+        runtime_environment={"name": "my_sql_datasource"},
+    )
+
+
+    my_data_connector.self_check()

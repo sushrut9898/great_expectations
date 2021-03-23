@@ -17,6 +17,8 @@ from great_expectations.core.id_dict import (
     PartitionDefinitionSubset,
 )
 from great_expectations.datasource.data_connector.data_connector import DataConnector
+from great_expectations.datasource.data_connector.util import get_filesystem_one_level_directory_glob_path_list, \
+    batch_definition_matches_batch_request
 from great_expectations.execution_engine import ExecutionEngine
 
 logger = logging.getLogger(__name__)
@@ -124,6 +126,25 @@ class RuntimeDataConnector(DataConnector):
             batch_request=batch_request
         )
 
+    # def _get_batch_definition_list_from_batch_request(
+    #     self,
+    #     batch_request: BatchRequest
+    # ) -> List[BatchDefinition]:
+    #     self._validate_batch_request(batch_request=batch_request)
+    #
+    #     # if it is a single file or a directory with multiple?
+    #
+    #     # we currently support single?
+    #
+    #     #
+    #     # we would want it to do what we have defined below
+    #     # path
+    #
+    #
+    #     # then we can get a path list using
+    #     base_directory = get_filesystem_one_level_directory_glob_path_list(path)
+
+
     def _get_batch_definition_list_from_batch_request(
         self,
         batch_request: BatchRequest,
@@ -140,21 +161,60 @@ class RuntimeDataConnector(DataConnector):
         """
         self._validate_batch_request(batch_request=batch_request)
 
-        batch_identifiers = batch_request.partition_request.get("batch_identifiers")
+        # IN THE CASE OF FILE PATH?!
 
-        self._validate_batch_identifiers(batch_identifiers=batch_identifiers)
+        batch_identifiers: Optional[dict] = None
+        if batch_request.batch_identifiers:
+            self._validate_batch_identifiers(
+                batch_identifiers=batch_request.batch_identifiers
+            )
+            batch_identifiers = batch_request.batch_identifiers
+        if not batch_identifiers:
+            batch_identifiers = {}
 
-        batch_definition_list: List[BatchDefinition]
-        batch_definition: BatchDefinition = BatchDefinition(
-            datasource_name=self.datasource_name,
-            data_connector_name=self.name,
-            data_asset_name=batch_request.data_asset_name,
-            partition_definition=PartitionDefinition(batch_identifiers),
+        batch_definition_list: List[BatchDefinition] = list(
+            filter(
+                lambda batch_definition: batch_definition_matches_batch_request(
+                    batch_definition=batch_definition, batch_request=batch_request
+                ),
+                self._get_batch_definition_list_from_cache(),
+            )
         )
-        batch_definition_list = [batch_definition]
-        self._update_data_references_cache(
-            batch_request.data_asset_name, batch_definition_list, batch_identifiers
-        )
+
+        # batch_definition_list: List[BatchDefinition]
+        # batch_definition: BatchDefinition = BatchDefinition(
+        #     datasource_name=self.datasource_name,
+        #     data_connector_name=self.name,
+        #     data_asset_name=batch_request.data_asset_name,
+        #     batch_identifiers=BatchIdentifiers(batch_identifiers),
+        # )
+
+
+        # update data_reference_list
+        # add sorting
+        # add limit?
+        # add filter?
+        # where is
+        #batch_definition_list = [batch_definition]
+        #
+        #self._update_data_references_cache(
+        #    batch_request.data_asset_name, batch_definition_list, batch_identifiers
+        #)
+        # we need to update the batch_definition list if it is there
+
+        # question to answer:
+            # what happens if it is there already?
+            #
+            #
+        return batch_definition_list
+
+    def _get_batch_definition_list_from_cache(self) -> List[BatchDefinition]:
+        batch_definition_list: List[BatchDefinition] = [
+            batch_definitions[0]
+            for data_reference_sub_cache in self._data_references_cache.values()
+            for batch_definitions in data_reference_sub_cache.values()
+            if batch_definitions is not None
+        ]
         return batch_definition_list
 
     def _update_data_references_cache(
@@ -235,6 +295,22 @@ class RuntimeDataConnector(DataConnector):
                 both absent in the batch_request parameter.
                 """
             )
+
+        # in case of path, we can build the batch_identifiers from filepaths
+        if runtime_parameters.get("path"):
+            pass
+        # in case of query or df, then we want to enforce this constraint.
+        else:
+            if not (
+                (not runtime_parameters and not batch_identifiers)
+                or (runtime_parameters and batch_identifiers)
+            ):
+                raise ge_exceptions.DataConnectorError(
+                    f"""RuntimeDataConnector "{self.name}" requires runtime_parameters and batch_identifiers to be both
+                    present and non-empty or both absent in the batch_request parameter in case of path or batch_data
+                    """
+                )
+
 
     def _validate_batch_identifiers(self, batch_identifiers: dict):
         if batch_identifiers is None:

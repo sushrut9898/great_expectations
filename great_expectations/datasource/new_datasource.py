@@ -119,31 +119,65 @@ class BaseDatasource:
             batch_request=batch_request
         )
 
-        if batch_request["batch_data"] is None:
-            batches: List[Batch] = []
-            for batch_definition in batch_definition_list:
-                batch_definition.batch_spec_passthrough = (
-                    batch_request.batch_spec_passthrough
-                )
-                batch_data: Any
-                batch_spec: PathBatchSpec
-                batch_markers: BatchMarkers
-                (
-                    batch_data,
-                    batch_spec,
-                    batch_markers,
-                ) = data_connector.get_batch_data_and_metadata(
-                    batch_definition=batch_definition
-                )
-                new_batch: Batch = Batch(
-                    data=batch_data,
-                    batch_request=batch_request,
-                    batch_definition=batch_definition,
-                    batch_spec=batch_spec,
-                    batch_markers=batch_markers,
-                )
-                batches.append(new_batch)
-            return batches
+
+        # <WILL> this is no longer true
+        # if isinstance(batch_request, RuntimeBatchRequest):
+        #     # This is a runtime batch_request
+        #
+        #     if len(batch_definition_list) != 1:
+        #         raise ValueError(
+        #             "RuntimeBatchRequests must specify exactly one corresponding BatchDefinition"
+        #         )
+        #
+        #     batch_definition = batch_definition_list[0]
+        #     runtime_parameters = batch_request.runtime_parameters
+        #
+        #     # noinspection PyArgumentList
+        #     (
+        #         batch_data,
+        #         batch_spec,
+        #         batch_markers,
+        #     ) = data_connector.get_batch_data_and_metadata(
+        #         batch_definition=batch_definition,
+        #         runtime_parameters=runtime_parameters,
+        #     )
+        #
+        #     new_batch: Batch = Batch(
+        #         data=batch_data,
+        #         batch_request=batch_request,
+        #         batch_definition=batch_definition,
+        #         batch_spec=batch_spec,
+        #         batch_markers=batch_markers,
+        #     )
+        #
+        #     return [new_batch]
+        #else:
+        # <WILL> need to indent this later
+
+        batches: List[Batch] = []
+        for batch_definition in batch_definition_list:
+            batch_definition.batch_spec_passthrough = (
+                batch_request.batch_spec_passthrough
+            )
+            batch_data: Any
+            batch_spec: PathBatchSpec
+            batch_markers: BatchMarkers
+            (
+                batch_data,
+                batch_spec,
+                batch_markers,
+            ) = data_connector.get_batch_data_and_metadata(
+                batch_definition=batch_definition
+            )
+            new_batch: Batch = Batch(
+                data=batch_data,
+                batch_request=batch_request,
+                batch_definition=batch_definition,
+                batch_spec=batch_spec,
+                batch_markers=batch_markers,
+            )
+            batches.append(new_batch)
+        return batches
 
         else:
             # This is a runtime batch_request

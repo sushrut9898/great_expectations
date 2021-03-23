@@ -354,3 +354,32 @@ def test_get_batch_list_from_new_style_datasource_with_sql_datasource(
     )
     assert batch.batch_definition["partition_definition"] == {"date": "2020-01-15"}
     assert isinstance(batch.data, SqlAlchemyBatchData)
+
+
+
+def test_get_batch_list_sorting(
+    sa, data_context_with_sql_datasource_for_testing_get_batch_configured
+):
+    context = data_context_with_sql_datasource_for_testing_get_batch_configured
+
+    batch_request: Union[dict, BatchRequest] = {
+        "datasource_name": "my_sql_datasource",
+        "data_connector_name": "my_configured_data_connector",
+        "data_asset_name": "table_partitioned_by_date_column__A",
+#        "data_connector_query": {"batch_identifiers": {"date": "2020-01-15"}}, ## this means that we are getting all 30
+    }
+    batch_list: List[Batch] = context.get_batch_list(**batch_request)
+
+
+
+    #
+    # assert len(batch_list) == 1
+    #
+    # batch: Batch = batch_list[0]
+    # assert batch.batch_spec is not None
+    # assert (
+    #     batch.batch_definition["data_asset_name"]
+    #     == "table_partitioned_by_date_column__A"
+    # )
+    # assert batch.batch_definition["batch_identifiers"] == {"date": "2020-01-15"}
+    # assert isinstance(batch.data, SqlAlchemyBatchData)
