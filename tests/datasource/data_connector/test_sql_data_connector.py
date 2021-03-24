@@ -496,7 +496,7 @@ def test_example_H(test_cases_for_sql_data_connector_sqlite_execution_engine):
     # name: my_sql_data_connector
     # datasource_name: FAKE_Datasource_NAME
 
-    # data_assets:
+    # assets:
     #     table_that_should_be_partitioned_by_random_hash__H:
     #         splitter_method: _split_on_hashed_column
     #         splitter_kwargs:
