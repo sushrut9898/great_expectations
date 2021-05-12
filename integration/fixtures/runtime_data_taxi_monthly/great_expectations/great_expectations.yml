@@ -16,16 +16,48 @@ config_version: 3.0
 datasources:
   taxi_datasource_with_runtime_data_connector:
     class_name: Datasource
+    module_name: great_expectations.datasource
     execution_engine:
       class_name: PandasExecutionEngine
       module_name: great_expectations.execution_engine
-    module_name: great_expectations.datasource
     data_connectors:
       default_runtime_data_connector_name:
+        class_name: RuntimeDataConnector
+        module_name: great_expectations.datasource.data_connector
         batch_identifiers:
           - default_identifier_name
-        module_name: great_expectations.datasource.data_connector
+  my_postgres_datasource:
+    class_name: Datasource
+    module_name: great_expectations.datasource
+    execution_engine:
+      class_name: SqlAlchemyExecutionEngine
+      module_name: great_expectations.execution_engine
+      connection_string: postgresql+psycopg2://postgres:@localhost/test_ci
+    data_connectors:
+      default_runtime_data_connector_name:
         class_name: RuntimeDataConnector
+        module_name: great_expectations.datasource.data_connector
+        batch_identifiers:
+          - default_identifier_name
+      default_inferred_data_connector_name:
+        class_name: InferredAssetSqlDataConnector
+        module_name: great_expectations.datasource.data_connector
+  my_snowflake_datasource:
+    class_name: Datasource
+    module_name: great_expectations.datasource
+    execution_engine:
+      class_name: SqlAlchemyExecutionEngine
+      module_name: great_expectations.execution_engine
+      connection_string: snowflake://will:F24th4r@2234we@oca29081.us-east-1/SUPERCONDUCTIVE/NYC_TAXI?warehouse=COMPUTE_WH
+    data_connectors:
+      default_runtime_data_connector_name:
+        class_name: RuntimeDataConnector
+        module_name: great_expectations.datasource.data_connector
+        batch_identifiers:
+          - default_identifier_name
+      default_inferred_data_connector_name:
+        class_name: InferredAssetSqlDataConnector
+        module_name: great_expectations.datasource.data_connector
 config_variables_file_path: uncommitted/config_variables.yml
 
 # The plugins_directory will be added to your python path for custom modules
@@ -85,7 +117,7 @@ data_docs_sites:
       class_name: DefaultSiteIndexBuilder
 
 anonymous_usage_statistics:
-  data_context_id: b9b23461-53c3-4490-a09e-fbe12984c25a
-  enabled: true
   usage_statistics_url: https://dev.stats.greatexpectations.io/great_expectations/v1/usage_statistics
+  enabled: true
+  data_context_id: b9b23461-53c3-4490-a09e-fbe12984c25a
 notebooks:

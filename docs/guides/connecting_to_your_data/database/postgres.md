@@ -93,7 +93,7 @@ Save the configuration into your DataContext by running the `add_datasource()` f
 
 ### 6. Test Configuration
 
-Test your configuration by retrieving a Validator from Great Expectations using a `BatchRequest`.
+Test your configuration by retrieving a `Validator` from Great Expectations using a `BatchRequest`.
 
 <Tabs
   defaultValue='runtime_batch_request'
@@ -103,7 +103,7 @@ Test your configuration by retrieving a Validator from Great Expectations using 
   ]}>
   <TabItem value="runtime_batch_request">
 
-Here is an example of loading a batch from a query. As you can see in the following snippet, when you fetch a Batch of data, you actually create a Validator, which is a Batch + ExpectationSuite. This allows you to perform operations like `.head()` to see 
+Here is an example of loading a batch from a query. As you can see in the following snippet, when you fetch a Batch of data, you actually create a `Validator`, which is a Batch + ExpectationSuite. This allows you to perform operations like `.head()` to see 
 the first few rows of your table, as well as run Expectations directly. 
 
 ```python file=../../../../integration/code/connecting_to_your_data/database/postgres.py#L39-L53
@@ -121,7 +121,7 @@ the first few rows of your table, as well as run Expectations directly.
 
   <TabItem value="batch_request">
 
-Here is an example of loading a batch by naming a table. As you can see in the following snippet, when you fetch a Batch of data, you actually create a Validator, which is a Batch + ExpectationSuite. This allows you to perform operations like `.head()` to see 
+Here is an example of loading a batch by naming a table. As you can see in the following snippet, when you fetch a Batch of data, you actually create a `Validator`, which is a Batch + ExpectationSuite. This allows you to perform operations like `.head()` to see 
 the first few rows of your table, as well as run Expectations directly. 
 
 ```python file=../../../../integration/code/connecting_to_your_data/database/postgres.py#L56-L67

@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 
 import pytest
 
@@ -20,19 +21,26 @@ class BackendDependencies(enum.Enum):
 
 
 integration_test_matrix = [
+    # {
+    #     "user_flow_script": "integration/code/connecting_to_your_data/filesystem/pandas.py",
+    #     "base_dir": file_relative_path(__file__, "../../"),
+    #     "data_context_dir": "integration/fixtures/runtime_data_taxi_monthly/great_expectations",
+    #     "data_dir": "integration/fixtures/data",
+    # },
+    # {
+    #     "name": "postgres_runtime_golden_path",
+    #     "data_dir": "integration/fixtures/data",
+    #     "base_dir": file_relative_path(__file__, "../../"),
+    #     "data_context_dir": "integration/fixtures/runtime_data_taxi_monthly/great_expectations",
+    #     "user_flow_script": "integration/code/connecting_to_your_data/database/postgres.py",
+    #     "extra_backend_dependencies": BackendDependencies.POSTGRESQL,
+    # },
     {
-        "user_flow_script": "integration/code/connecting_to_your_data/filesystem/pandas.py",
+        "name": "snowflake_runtime_golden_path",
+        "data_dir": "integration/fixtures/data",
         "base_dir": file_relative_path(__file__, "../../"),
         "data_context_dir": "integration/fixtures/runtime_data_taxi_monthly/great_expectations",
-        "data_dir": "integration/fixtures/data",
-    },
-    {
-        "name": "postgres_runtime_golden_path",
-        "data_dir": "integration/fixtures/data",
-        "base_dir": file_relative_path(__file__, "../../"),
-        "data_context_dir": "integration/fixtures/runtime_data_taxi_monthly/great_expectations",
-        "user_flow_script": "integration/code/connecting_to_your_data/database/postgres.py",
-        "extra_backend_dependencies": BackendDependencies.POSTGRESQL,
+        "user_flow_script": "integration/code/connecting_to_your_data/database/snowflake_db.py",
     },
     # {
     #     "name": "pandas_two_batch_requests_two_validators",
@@ -64,15 +72,21 @@ def test_docs(test_configuration, tmp_path, pytest_parsed_arguments):
 
     workdir = os.getcwd()
     try:
+
+        startTime = time.time()
         os.chdir(tmp_path)
         base_dir = test_configuration.get("base_dir", ".")
-        # Ensure GE is installed in our environment
-        ge_requirement = test_configuration.get("ge_requirement", "great_expectations")
-        execute_shell_command(f"pip install {ge_requirement}")
 
+        # Ensure GE is installed in our environment
+        #ge_requirement = test_configuration.get("ge_requirement", "great_expectations")
+        #execute_shell_command(f"pip install {ge_requirement}")
+        #executionTime = (time.time() - startTime)
+        #print("Installation Time:" + str(executionTime))
         #
         # Build test state
         #
+
+        startTime = time.time()
 
         # DataContext
         context_source_dir = os.path.join(
@@ -83,6 +97,11 @@ def test_docs(test_configuration, tmp_path, pytest_parsed_arguments):
             context_source_dir,
             test_context_dir,
         )
+        executionTime = (time.time() - startTime)
+        print("DataContext Time:" + str(executionTime))
+
+
+        startTime = time.time()
 
         if test_configuration.get("data_dir") is not None:
             # Test Data
@@ -101,9 +120,16 @@ def test_docs(test_configuration, tmp_path, pytest_parsed_arguments):
         script_path = os.path.join(tmp_path, "test_script.py")
         shutil.copyfile(script_source, script_path)
         # Check initial state
+        executionTime = (time.time() - startTime)
+
+        print("CopyingData Time:" + str(executionTime))
+
+
+        startTime = time.time()
 
         # Execute test
         res = subprocess.run(["python", script_path], capture_output=True)
+        #res = "Hello"
         # Check final state
         expected_stderrs = test_configuration.get("expected_stderrs")
         expected_stdouts = test_configuration.get("expected_stdouts")
@@ -112,6 +138,9 @@ def test_docs(test_configuration, tmp_path, pytest_parsed_arguments):
         errs = res.stderr.decode("utf-8")
         print(outs)
         print(errs)
+        executionTime = (time.time() - startTime)
+
+        print("RunningTime Time:" + str(executionTime))
 
         if expected_stderrs:
             assert expected_stderrs == errs
@@ -127,6 +156,7 @@ def test_docs(test_configuration, tmp_path, pytest_parsed_arguments):
         raise
     finally:
         os.chdir(workdir)
+
 
 
 def _check_for_skipped_tests(pytest_args, test_configuration) -> None:
