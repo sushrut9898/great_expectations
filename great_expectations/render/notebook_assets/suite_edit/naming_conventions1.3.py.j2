@@ -1,0 +1,11 @@
+#suite name- no change needed
+suite_name = f"{zone}.{database_name}.{table_name}"
+
+#specify query if you do not wish to select whole table as a batch
+query_string = """{{ query }}"""
+
+#Create batch - no change needed
+dq.create_expectation_suite(suite_name, overwrite_existing=True)
+
+#get batch - no change needed
+batch = dq.get_batch(suite_name, database=database_name, table=table_name, query=query_string)

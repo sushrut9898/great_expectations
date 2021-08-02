@@ -1,6 +1,7 @@
-## Save & Review Your Expectations
+#### YOU ARE DONE!!
 
-Let's save the expectation suite as a JSON file in the `great_expectations/expectations` directory of your project.
-If you decide not to save some expectations that you created, use [remove_expectation method](https://docs.greatexpectations.io/en/latest/autoapi/great_expectations/data_asset/index.html?highlight=remove_expectation&utm_source=notebook&utm_medium=edit_expectations#great_expectations.data_asset.DataAsset.remove_expectation).
+![coffee](https://media.giphy.com/media/xUOwG5aFxxcLTVCaeQ/giphy.gif)
 
-Let's now rebuild your Data Docs, which helps you communicate about your data with both machines and humans.
+###### *Now sit back and wait for Data Lake team to review the expectations for you.*
+###### *For the existing expectations in Data Lake, please refer: [Data Lake DQ Repo](https://msstash.morningstar.com/projects/DL/repos/dl-data-qc/browse/great_expectations/expectations)*
+##### *For more information on Data Lake DQ Vision, please refer: [DQ Vision](https://mswiki.morningstar.com/display/DNA/Data+Quality+Vision)*

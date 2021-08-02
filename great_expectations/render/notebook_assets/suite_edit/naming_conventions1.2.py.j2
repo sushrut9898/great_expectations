@@ -1,0 +1,12 @@
+#specify query string and database (Optional)
+tid="{{ tid }}" #team id
+query_string = """{{ query }}"""
+
+#suite name- no change needed
+suite_name = f"{zone}.{database_name}.{tid}.{table_name}"
+
+#Create batch - no change needed
+dq.create_expectation_suite(suite_name, overwrite_existing=True)
+
+#get batch - no change needed
+batch = dq.get_batch(suite_name, database=database_name, query=query_string)

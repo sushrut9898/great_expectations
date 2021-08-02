@@ -297,11 +297,11 @@ Great Expectations will create a new Expectation Suite '{:s}' and store it here:
 
 
 def launch_jupyter_notebook(notebook_path: str) -> None:
-    jupyter_command_override = os.getenv("GE_JUPYTER_CMD", None)
-    if jupyter_command_override:
-        subprocess.call(f"{jupyter_command_override} {notebook_path}", shell=True)
-    else:
-        subprocess.call(["jupyter", "notebook", notebook_path])
+    # jupyter_command_override = os.getenv("GE_JUPYTER_CMD", None)
+    # if jupyter_command_override:
+    #     subprocess.call(f"{jupyter_command_override} {notebook_path}", shell=True)
+
+    subprocess.call(["jupyter-lab", notebook_path])
 
 
 def load_batch(

@@ -1,0 +1,524 @@
+{
+    "data_asset_type": "Dataset",
+    "expectation_suite_name": "quarantine.business_stg__titanic_stg.tickets_stg",
+    "expectations": [
+        {
+            "expectation_type": "expect_table_row_count_to_be_between",
+            "kwargs": {
+                "max_value": 654,
+                "min_value": 535
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_table_column_count_to_equal",
+            "kwargs": {
+                "value": 14
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_table_columns_to_match_ordered_list",
+            "kwargs": {
+                "column_list": [
+                    "passenger_id",
+                    "survived",
+                    "p_class",
+                    "name",
+                    "sex",
+                    "age",
+                    "sib_sp",
+                    "parch",
+                    "ticket",
+                    "fare",
+                    "cabin",
+                    "embarked",
+                    "_is_deleted"
+                ]
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_unique",
+            "kwargs": {
+                "column": "passenger_id"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "survived"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_distinct_values_to_be_in_set",
+            "kwargs": {
+                "column": "survived",
+                "value_set": [
+                    0,
+                    1
+                ]
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_kl_divergence_to_be_less_than",
+            "kwargs": {
+                "column": "survived",
+                "partition_object": {
+                    "values": [
+                        0,
+                        1
+                    ],
+                    "weights": [
+                        0.6168067226890757,
+                        0.3831932773109244
+                    ]
+                },
+                "threshold": 0.6
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "p_class"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_distinct_values_to_be_in_set",
+            "kwargs": {
+                "column": "p_class",
+                "value_set": [
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_kl_divergence_to_be_less_than",
+            "kwargs": {
+                "column": "p_class",
+                "partition_object": {
+                    "values": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "weights": [
+                        0.2235294117647059,
+                        0.20672268907563024,
+                        0.5697478991596638
+                    ]
+                },
+                "threshold": 0.6
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_unique",
+            "kwargs": {
+                "column": "name"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "sex"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_distinct_values_to_be_in_set",
+            "kwargs": {
+                "column": "sex",
+                "value_set": [
+                    "female",
+                    "male"
+                ]
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_kl_divergence_to_be_less_than",
+            "kwargs": {
+                "column": "sex",
+                "partition_object": {
+                    "values": [
+                        "female",
+                        "male"
+                    ],
+                    "weights": [
+                        0.37142857142857144,
+                        0.6285714285714286
+                    ]
+                },
+                "threshold": 0.6
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_unique",
+            "kwargs": {
+                "column": "age"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "sib_sp"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_distinct_values_to_be_in_set",
+            "kwargs": {
+                "column": "sib_sp",
+                "value_set": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    8
+                ]
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_kl_divergence_to_be_less_than",
+            "kwargs": {
+                "column": "sib_sp",
+                "partition_object": {
+                    "values": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        8
+                    ],
+                    "weights": [
+                        0.6705882352941176,
+                        0.23865546218487396,
+                        0.02857142857142857,
+                        0.020168067226890758,
+                        0.025210084033613446,
+                        0.005042016806722689,
+                        0.011764705882352941
+                    ]
+                },
+                "threshold": 0.6
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "parch"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_distinct_values_to_be_in_set",
+            "kwargs": {
+                "column": "parch",
+                "value_set": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ]
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_kl_divergence_to_be_less_than",
+            "kwargs": {
+                "column": "parch",
+                "partition_object": {
+                    "values": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5
+                    ],
+                    "weights": [
+                        0.746218487394958,
+                        0.13949579831932774,
+                        0.09747899159663866,
+                        0.0067226890756302525,
+                        0.005042016806722689,
+                        0.005042016806722689
+                    ]
+                },
+                "threshold": 0.6
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_unique",
+            "kwargs": {
+                "column": "ticket"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_unique",
+            "kwargs": {
+                "column": "fare"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_unique",
+            "kwargs": {
+                "column": "cabin"
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "embarked",
+                "mostly": 0.897
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_distinct_values_to_be_in_set",
+            "kwargs": {
+                "column": "embarked",
+                "value_set": [
+                    "C",
+                    "Q",
+                    "S"
+                ]
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        },
+        {
+            "expectation_type": "expect_column_kl_divergence_to_be_less_than",
+            "kwargs": {
+                "column": "embarked",
+                "partition_object": {
+                    "values": [
+                        "C",
+                        "Q",
+                        "S"
+                    ],
+                    "weights": [
+                        0.1821247892074199,
+                        0.09106239460370995,
+                        0.7268128161888702
+                    ]
+                },
+                "threshold": 0.6
+            },
+            "meta": {
+                "BasicSuiteBuilderProfiler": {
+                    "confidence": "very low"
+                }
+            }
+        }
+    ],
+    "meta": {
+        "BasicSuiteBuilderProfiler": {
+            "batch_kwargs": {
+                "data_asset_name": null,
+                "datasource": "athena",
+                "query": "select * from business_stg__titanic_stg.tickets_stg"
+            },
+            "created_at": 1613644007.2137713,
+            "created_by": "BasicSuiteBuilderProfiler"
+        },
+        "citations": [
+            {
+                "batch_kwargs": {
+                    "data_asset_name": null,
+                    "datasource": "athena",
+                    "query": "select * from business_stg__titanic_stg.tickets_stg"
+                },
+                "batch_markers": {
+                    "ge_load_time": "20210218T102328.713691Z"
+                },
+                "batch_parameters": null,
+                "citation_date": "20210218T102756.578986Z",
+                "comment": "BasicSuiteBuilderProfiler added a citation based on the current batch."
+            }
+        ],
+        "columns": {
+            "_is_deleted": {
+                "description": ""
+            },
+            "age": {
+                "description": ""
+            },
+            "cabin": {
+                "description": ""
+            },
+            "embarked": {
+                "description": ""
+            },
+            "fare": {
+                "description": ""
+            },
+            "name": {
+                "description": ""
+            },
+            "p_class": {
+                "description": ""
+            },
+            "parch": {
+                "description": ""
+            },
+            "passenger_id": {
+                "description": ""
+            },
+            "sex": {
+                "description": ""
+            },
+            "sib_sp": {
+                "description": ""
+            },
+            "survived": {
+                "description": ""
+            },
+            "ticket": {
+                "description": ""
+            }
+        },
+        "deployed_env": [
+            "stg"
+        ],
+        "env": "NON-PROD",
+        "great_expectations_version": "0.12.4",
+        "notes": {
+            "content": [
+                "_To add additional notes, edit the <code>meta.notes.content</code> field in the appropriate Expectation json file._"
+            ],
+            "format": "markdown"
+        },
+        "schema": [
+            "business_stg__titanic_stg"
+        ],
+        "type": "query"
+    }
+}

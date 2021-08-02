@@ -172,6 +172,93 @@ class SuiteEditNotebookRenderer(BaseNotebookRenderer):
         )
         self.add_code_cell(code, lint=True)
 
+    def extract_dl_information(self, suite_name, batch_kwargs):
+        suite_info = {
+            "zone": None,
+            "database": None,
+            "table": None,
+            "tid": None,
+            "query": None,
+        }
+        name = suite_name.split(".")
+        suite_info["zone"] = name[0]
+        suite_info["database"] = name[1]
+        if len(name) == 3:
+            suite_info["table"] = name[2]
+        else:
+            suite_info["tid"] = name[2]
+            suite_info["table"] = name[3]
+        if "query" in batch_kwargs.keys():
+            suite_info["query"] = batch_kwargs["query"]
+        return suite_info
+
+    def add_dl_header(self, suite_name: str, batch_kwargs) -> None:
+        suite_info = self.extract_dl_information(suite_name, batch_kwargs)
+        naming_conventions_description_markdown = self.render_with_overwrite(
+            self.header_markdown, "naming_conventions_description.md"
+        )
+
+        self.add_markdown_cell(naming_conventions_description_markdown)
+
+        self.add_markdown_cell(
+            """<p><font color='red' size='3em'><strong>1.1 Naming Conventions</strong></font></p>"""
+        )
+        if not batch_kwargs:
+            batch_kwargs = dict()
+        code = self.render_with_overwrite(
+            self.header_code,
+            "naming_conventions1.1.py.j2",
+            zone=suite_info["zone"],
+            database=suite_info["database"],
+            table=suite_info["table"],
+            tid=suite_info["tid"],
+            query=suite_info["query"],
+        )
+        self.add_code_cell(code, lint=True)
+
+        self.add_markdown_cell(
+            """<p><font color='red' size='3em'><strong>1.2 Specify query string and database</strong></font></p>"""
+        )
+        if not batch_kwargs:
+            batch_kwargs = dict()
+        code = self.render_with_overwrite(
+            self.header_code,
+            "naming_conventions1.2.py.j2",
+            zone=suite_info["zone"],
+            database=suite_info["database"],
+            table=suite_info["table"],
+            tid=suite_info["tid"],
+            query=suite_info["query"],
+        )
+        self.add_code_cell(code, lint=True)
+
+        self.add_markdown_cell(
+            """<p><font color='red' size='3em'><strong><u>OR</u> 1.3 Specify table and database</strong></font></p>"""
+        )
+        if not batch_kwargs:
+            batch_kwargs = dict()
+        code = self.render_with_overwrite(
+            self.header_code,
+            "naming_conventions1.3.py.j2",
+            zone=suite_info["zone"],
+            database=suite_info["database"],
+            table=suite_info["table"],
+            tid=suite_info["tid"],
+            query=suite_info["query"],
+        )
+        self.add_code_cell(code, lint=True)
+
+        self.add_markdown_cell(
+            """<p><font color='red' size='3em'><strong>2. Add Expectations</strong></font></p>
+<font color='grey' size='2em'><em>This is DQ batch object and we use GE's expect_* functions to add data expectations</em></font>"""
+        )
+        self.add_markdown_cell(
+            """#### [Glossary of Expectations for reference](https://docs.greatexpectations.io/en/latest/reference/glossary_of_expectations.html)"""
+        )
+        self.add_markdown_cell(
+            """<font color='grey' size='2em'><em>Few of the mechanical checks are provided as samples for your reference. Please edit as required.</em></font>"""
+        )
+
     def add_footer(self) -> None:
         markdown = self.render_with_overwrite(self.footer_markdown, "FOOTER.md")
         self.add_markdown_cell(markdown)
@@ -189,6 +276,53 @@ class SuiteEditNotebookRenderer(BaseNotebookRenderer):
             validation_operator_name=validation_operator_name,
         )
         self.add_code_cell(code)
+
+    def add_dl_footer(self) -> None:
+        self.add_markdown_cell(
+            """<p><font color='grey' size='2em'><em>Save expectations in json file</em></font></p>"""
+        )
+        self.add_code_cell("""dq.save_expectation_suite()""")
+
+        self.add_markdown_cell(
+            """<p><font color='grey' size='2em'><em>Check how the expectations json looks</em></font></p>"""
+        )
+        self.add_code_cell("""dq.expectation_suite""")
+
+        self.add_markdown_cell(
+            """<p><font color='grey' size='2em'><em>This will help you validate the Expectations Suite prior to Publish. This is an optional step as we validate the Expectations Suite from publish_expectation_suite() internally. </em></font></p>"""
+        )
+        self.add_markdown_cell(
+            """###### *For the existing validations in Data Lake, please refer: [Validations List](https://mswiki.morningstar.com/display/DNA/Automated+Validations+on+Expectations+Suite)*"""
+        )
+        self.add_code_cell("""dq.validate_expectations()""")
+
+        self.add_markdown_cell(
+            """<p><font color='grey' size='2em'><em>Run the validation of the expectations that we created and get a clickable link to the derived html report</em></font></p>"""
+        )
+        code = self.render_with_overwrite(
+            self.footer_code,
+            "footer.py.j2",
+        )
+        self.add_code_cell(code)
+
+        self.add_markdown_cell(
+            """<p><font color='blue' size='3em'><strong>3. Sample Report Link</strong></font></p></em></font>"""
+        )
+        self.add_code_cell("""report_link""")
+
+        self.add_markdown_cell(
+            """<p><font color='grey' size='2em'><em>Publish expectations for Data Lake Team to review <br/>
+    Once approved, the expectations suite will get merged & promoted to respective environment<br/>
+    The data quality tests will run on the database/table as per the requirements anytime new data is ingested into Data Lake.
+    </em></font></p>"""
+        )
+        self.add_markdown_cell(
+            """<p><font color='blue' size='3em'><strong>4. Pull Request Link</strong></font></p></em></font>"""
+        )
+        self.add_code_cell("""dq.publish_expectation_suite()""")
+
+        markdown = self.render_with_overwrite(self.footer_markdown, "FOOTER.md")
+        self.add_markdown_cell(markdown)
 
     def add_expectation_cells_from_suite(self, expectations):
         expectations_by_column = self._get_expectations_by_column(expectations)
@@ -283,9 +417,10 @@ class SuiteEditNotebookRenderer(BaseNotebookRenderer):
 
         batch_kwargs = self.get_batch_kwargs(suite, batch_kwargs)
         self.add_header(suite_name, batch_kwargs)
-        self.add_authoring_intro()
+        self.add_dl_header(suite_name, batch_kwargs)
+        # self.add_authoring_intro()
         self.add_expectation_cells_from_suite(suite.expectations)
-        self.add_footer()
+        self.add_dl_footer()
 
         return self._notebook
 

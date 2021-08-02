@@ -176,10 +176,10 @@ def tell_user_suite_exists(
 
 def launch_jupyter_notebook(notebook_path: str):
     jupyter_command_override: str = os.getenv("GE_JUPYTER_CMD", None)
-    if jupyter_command_override:
-        subprocess.call(f"{jupyter_command_override} {notebook_path}", shell=True)
-    else:
-        subprocess.call(["jupyter", "notebook", notebook_path])
+    # if jupyter_command_override:
+    #     subprocess.call(f"{jupyter_command_override} {notebook_path}", shell=True)
+    # else:
+    subprocess.call(["jupyter-lab", notebook_path])
 
 
 def get_validator(
